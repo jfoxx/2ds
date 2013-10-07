@@ -3,7 +3,8 @@ using System.Collections;
 
 public class PlayerMovement : MonoBehaviour
 {
- 
+ 	public AudioClip jumpSound;
+	
 	// These variables are for adjusting in the inspector how the object behaves 
 	public float maxSpeed = 7;
 	public float force = 8;
@@ -103,6 +104,7 @@ public class PlayerMovement : MonoBehaviour
 		}
 		
 		if (jump && grounded) {
+			audio.clip = jumpSound;
 			audio.Play();
 			rigidbody.velocity = rigidbody.velocity + (Vector3.up * jumpSpeed);
 			

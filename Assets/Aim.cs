@@ -22,7 +22,10 @@ public class Aim : MonoBehaviour {
 		Debug.DrawRay(transform.position, target);
 	}
 	
-	
-	
+	void OnGUI()
+	{
+		
+	}
 	
 }
+

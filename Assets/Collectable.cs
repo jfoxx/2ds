@@ -15,13 +15,7 @@ public class Collectable : MonoBehaviour
 		}
 	}
 	
-	void Start () 
-	{
-	
-	}
-	
-	void Update () 
-	{
-	
+	 void OnDestroy() {
+		// sparks?
 	}
 }

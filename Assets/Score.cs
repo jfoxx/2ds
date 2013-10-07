@@ -5,6 +5,8 @@ public class Score : MonoBehaviour {
 
 	public int score = 0;
 	
+	public AudioClip blip;
+	
 	void Start () {
 		
 	}
@@ -16,5 +18,9 @@ public class Score : MonoBehaviour {
 	
 	void collect(int amount){
 		score += amount;
+		if (blip != null) {
+			audio.clip = blip;
+			audio.Play();
+		}
 	}
 }
