@@ -19,6 +19,9 @@ public class PlayerMovement : MonoBehaviour
 	public int state = 0;
 	public bool grounded = false;
 	public float jumpLimit = 0;
+	
+	public Vector3 stickPosition;
+	public SpringJoint spring;
 	 
 	// Don't let the Physics Engine rotate this physics object so it doesn't fall over when running
 	void Awake ()
@@ -27,7 +30,8 @@ public class PlayerMovement : MonoBehaviour
 	}
 	void Start()
 	{
-		 distToGround = collider.bounds.extents.y;
+		spring = GetComponent<SpringJoint>();
+		distToGround = collider.bounds.extents.y;
 	}
 	 
 	void OnCollisionEnter (Collision collision)
@@ -71,8 +75,35 @@ public class PlayerMovement : MonoBehaviour
 			return Input.GetAxis ("Vertical") * force;
 		} 
 	}
+	
+	public virtual bool stickStart {
+		get {
+			return Input.GetKeyDown (KeyCode.LeftControl);
+		} 
+	}
+	
+	public virtual bool stickStay {
+		get {
+			return Input.GetKey (KeyCode.LeftControl);
+		} 
+	}
+	
+	public virtual bool stickExit {
+		get {
+			return Input.GetKeyUp (KeyCode.LeftControl);
+		} 
+	}
+	
 	void Update(){
 		grounded = IsGrounded();
+		if (stickStart) {
+			stickPosition = new Vector3(transform.position.x, transform.position.y, transform.position.z);		
+			spring.connectedBody.transform.position = stickPosition;
+		}
+		if (!stickStay) {
+			spring.connectedBody.transform.position = transform.position;
+		}
+
 	}
 	
 	void FixedUpdate ()
@@ -87,7 +118,7 @@ public class PlayerMovement : MonoBehaviour
 			transform.position = new Vector3(transform.position.x, transform.position.y, 0);
 		}
 		
-		if(horizontal == 0 && vertical == 0 && grounded)
+		if(horizontal == 0 && grounded)
 		{
 			rigidbody.velocity = new Vector3(rigidbody.velocity.x / walkFriction, rigidbody.velocity.y, 0);
 		}
@@ -95,12 +126,12 @@ public class PlayerMovement : MonoBehaviour
 		// If the object is grounded and isn't moving at the max speed or higher apply force to move it
 		if (rigidbody.velocity.magnitude < maxSpeed && grounded ) {
 			//rigidbody.AddForce (transform.rotation * Vector3.forward * vertical);
-			rigidbody.AddForce (transform.rotation * Vector3.right * horizontal * controll);
+			rigidbody.AddForce (transform.rotation * Vector3.right * horizontal);
 		}
 		
-		if (rigidbody.velocity.y < maxSpeed * controll && !grounded ) {
-			//rigidbody.AddForce (transform.rotation * Vector3.forward * vertical);
+		if (rigidbody.velocity.magnitude < maxSpeed && !grounded ) {
 			rigidbody.AddForce (transform.rotation * Vector3.right * horizontal * controll);
+			//rigidbody.AddForce (transform.rotation * Vector3.right * horizontal * controll);
 		}
 		
 		if (jump && grounded) {
@@ -109,5 +140,6 @@ public class PlayerMovement : MonoBehaviour
 			rigidbody.velocity = rigidbody.velocity + (Vector3.up * jumpSpeed);
 			
 		}
+	
 	}
 }

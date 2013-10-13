@@ -5,6 +5,7 @@ public class Health : MonoBehaviour {
 	
 	public float health;
 	public float max_health = 100;
+	
 
 	// Use this for initialization
 	void Start () {
@@ -22,12 +23,13 @@ public class Health : MonoBehaviour {
 	
 	void applyDamage(float damage){
 		Debug.Log("damage taken: " + damage);
-		//health -= damage;
+		health -= damage;
+		
 
 	}
 	
 	void onKillZone(){
-		health = 0;
+		die();
 	}
 	
 	void die(){

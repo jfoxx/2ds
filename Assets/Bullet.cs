@@ -4,7 +4,6 @@ using System.Collections;
 public class Bullet : MonoBehaviour {
 	
 	public Transform explosion;
-	public float speed = 10;
 	public float soundPauseTime = 2;
 	private float soundTimer = 0; 
 	
