@@ -5,7 +5,9 @@ public class PlayerMovement : MonoBehaviour
 {
  	public AudioClip jumpSound;
 	
-	// These variables are for adjusting in the inspector how the object behaves 
+	public Transform stickyPointPrefab;
+	Transform stickyPrefabInsctance;
+	
 	public float maxSpeed = 7;
 	public float force = 8;
 	public float jumpSpeed = 5;
@@ -14,50 +16,47 @@ public class PlayerMovement : MonoBehaviour
 	public Vector3 jumpNormal;
 	public float walkFriction = 1.5f; 
 	float distToGround;
+	public Aim aim;
+	public GameObject gunAxis; 
 	 
-	// These variables are there for use by the script and don't need to be edited
 	public int state = 0;
 	public bool grounded = false;
 	public float jumpLimit = 0;
 	
 	public Vector3 stickPosition;
 	public SpringJoint spring;
+	public float stickyTime = 3;
+	public float stickyTimer;
+	
+	public bool stickySet = false;
 	 
-	// Don't let the Physics Engine rotate this physics object so it doesn't fall over when running
 	void Awake ()
 	{ 
 		rigidbody.freezeRotation = true;
 	}
+	
 	void Start()
 	{
+		gunAxis = GameObject.Find("GunAxis");
+		if (gunAxis == null) {
+			Debug.Log("null");
+		}
+		aim = gunAxis.GetComponent<Aim>();
+		if (aim == null) {
+			Debug.Log("null");
+		}
+		
 		spring = GetComponent<SpringJoint>();
 		distToGround = collider.bounds.extents.y;
+		stickyTimer = stickyTime;
 	}
 	 
-	void OnCollisionEnter (Collision collision)
-	{
-
-	}
-	
-	void OnCollisionStay(Collision collision) 
-	{
-        foreach (ContactPoint contact in collision.contacts) {
-            Debug.DrawRay(contact.point, contact.normal, Color.red);
-			if(contact.normal.y <= 0.6){
-				//grounded = false;
-			}else{
-				//grounded = true;
-			}
-        }
-    }
-	
 	bool IsGrounded() 
 	{
  		return Physics.Raycast(transform.position, -Vector3.up, distToGround + 0.1f, 1<<9);
-		Debug.DrawRay(transform.position, -Vector3.up * 5, Color.red);
+		Debug.DrawRay(transform.position, Vector3.up * 25, Color.red);
 	}
-
-	 
+ 
 	public virtual bool jump {
 		get {
 			return Input.GetButton ("Fire2");
@@ -94,16 +93,41 @@ public class PlayerMovement : MonoBehaviour
 		} 
 	}
 	
-	void Update(){
+	void Update()
+	{
 		grounded = IsGrounded();
-		if (stickStart) {
-			stickPosition = new Vector3(transform.position.x, transform.position.y, transform.position.z);		
-			spring.connectedBody.transform.position = stickPosition;
+		
+		if (stickStart) 
+		{
+			RaycastHit hit;
+			if(Physics.Raycast(transform.position, gunAxis.transform.TransformDirection(Vector3.forward),out hit, 100, 1<<9))
+			{
+				Debug.DrawLine(gunAxis.transform.position, hit.point);
+				stickPosition = hit.point;
+				stickyPrefabInsctance = Instantiate(stickyPointPrefab, hit.point, Quaternion.identity) as Transform;
+				stickySet = true;
+			}
 		}
-		if (!stickStay) {
-			spring.connectedBody.transform.position = transform.position;
+		
+		if (stickExit || stickyTimer <= 0) {
+			stickySet = false;
+			stickyTimer = stickyTime;
+			if (stickyPrefabInsctance != null) {
+				Destroy(stickyPrefabInsctance.gameObject);
+			}
+			
+		}
+		
+		if (stickStay && stickySet) {
+			stickyTimer -= Time.deltaTime;
+		}
+		
+		if (!stickySet) 
+		{
+			stickPosition = transform.position;
 		}
 
+		spring.connectedBody.transform.position = stickPosition;
 	}
 	
 	void FixedUpdate ()

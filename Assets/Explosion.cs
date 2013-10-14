@@ -3,9 +3,9 @@ using System.Collections;
 
 public class Explosion : MonoBehaviour {
 	
-	public float explosionRadius = 5.0f;
+	public float explosionRadius = 3.0f;
 	public float explosionPower = 10.0f;
-	public float explosionDamage = 10.0f;
+	public float explosionDamage = 100.0f;
 	public float explosionTime = 1.0f;
 	
 	
@@ -25,7 +25,7 @@ public class Explosion : MonoBehaviour {
 			
 			if(hit.rigidbody != null)
 			{
-				hit.rigidbody.AddExplosionForce(200, explosionPosition, explosionRadius);
+				hit.rigidbody.AddExplosionForce(hitPoints * 300, explosionPosition, explosionRadius);
 			}
 		}
 	}
