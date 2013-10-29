@@ -5,6 +5,7 @@ public class PlayerMovement : MonoBehaviour
 {
  	public AudioClip jumpSound;
 	
+	public Transform stickyRestingObject;
 	public Transform stickyPointPrefab;
 	Transform stickyPrefabInsctance;
 	
@@ -28,6 +29,7 @@ public class PlayerMovement : MonoBehaviour
 	public float stickyTime = 3;
 	public float stickyTimer;
 	
+	
 	public bool stickySet = false;
 	 
 	void Awake ()
@@ -38,17 +40,13 @@ public class PlayerMovement : MonoBehaviour
 	void Start()
 	{
 		gunAxis = GameObject.Find("GunAxis");
-		if (gunAxis == null) {
-			Debug.Log("null");
-		}
+
 		aim = gunAxis.GetComponent<Aim>();
-		if (aim == null) {
-			Debug.Log("null");
-		}
 		
 		spring = GetComponent<SpringJoint>();
 		distToGround = collider.bounds.extents.y;
 		stickyTimer = stickyTime;
+		spring.connectedBody = stickyRestingObject.rigidbody;
 	}
 	 
 	bool IsGrounded() 
@@ -100,12 +98,17 @@ public class PlayerMovement : MonoBehaviour
 		if (stickStart) 
 		{
 			RaycastHit hit;
-			if(Physics.Raycast(transform.position, gunAxis.transform.TransformDirection(Vector3.forward),out hit, 100, 1<<9))
+			if(Physics.Raycast(transform.position, gunAxis.transform.TransformDirection(Vector3.forward),out hit, 1000))
 			{
-				Debug.DrawLine(gunAxis.transform.position, hit.point);
-				stickPosition = hit.point;
-				stickyPrefabInsctance = Instantiate(stickyPointPrefab, hit.point, Quaternion.identity) as Transform;
-				stickySet = true;
+				if (hit.transform.CompareTag("Sticky")) 
+				{
+					stickPosition = hit.point;
+					stickyPrefabInsctance = Instantiate(stickyPointPrefab, hit.point, Quaternion.identity) as Transform;
+					stickySet = true;
+					
+					
+				}
+				
 			}
 		}
 		
@@ -120,14 +123,19 @@ public class PlayerMovement : MonoBehaviour
 		
 		if (stickStay && stickySet) {
 			stickyTimer -= Time.deltaTime;
+			Debug.DrawLine(transform.position, spring.connectedBody.transform.position, Color.red);
+			//spring.connectedBody.transform.position = transform.position;
+			
 		}
 		
 		if (!stickySet) 
 		{
+			//stickPosition = transform.position;
 			stickPosition = transform.position;
+			
 		}
-
 		spring.connectedBody.transform.position = stickPosition;
+
 	}
 	
 	void FixedUpdate ()
@@ -149,13 +157,12 @@ public class PlayerMovement : MonoBehaviour
 		
 		// If the object is grounded and isn't moving at the max speed or higher apply force to move it
 		if (rigidbody.velocity.magnitude < maxSpeed && grounded ) {
-			//rigidbody.AddForce (transform.rotation * Vector3.forward * vertical);
 			rigidbody.AddForce (transform.rotation * Vector3.right * horizontal);
 		}
 		
 		if (rigidbody.velocity.magnitude < maxSpeed && !grounded ) {
 			rigidbody.AddForce (transform.rotation * Vector3.right * horizontal * controll);
-			//rigidbody.AddForce (transform.rotation * Vector3.right * horizontal * controll);
+			
 		}
 		
 		if (jump && grounded) {

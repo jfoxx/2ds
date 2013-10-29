@@ -6,7 +6,8 @@ public class Aim : MonoBehaviour {
 	Vector3 target;
 	public float raycastDist = 10;
 	public RaycastHit hit;
-	
+	public Transform playerObject;
+	public float distanceFromPlayer;
 	void Start () {
 		
 	}
@@ -18,7 +19,8 @@ public class Aim : MonoBehaviour {
 		float camY = Input.mousePosition.y;
 		float camZ = Input.mousePosition.z;
 		
-		Vector3 target = Camera.main.ScreenToWorldPoint (new Vector3 (camX, camY, 13 ) );
+		distanceFromPlayer = Vector3.Distance( Camera.main.transform.position, playerObject.transform.position);
+		Vector3 target = Camera.main.ScreenToWorldPoint (new Vector3 (camX, camY, distanceFromPlayer) );
 		Vector3 mytarget = new Vector3(target.x, target.y, 0);
 		transform.LookAt(mytarget);
 

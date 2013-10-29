@@ -1,26 +1,53 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class CameraFollow : MonoBehaviour {
+public class CameraFollow : MonoBehaviour 
+{
 	public Transform target;
 	Vector3 targetPosition;
+	public float minDistance;
+	public float maxDistance;
+	public float distance;
+	public float scrollSpeed = 100;
 	
-	void Start () {
+	
+	void Start () 
+	{
 		targetPosition = transform.position;
+		distance = 13;
 	}
 	
-	void FixedUpdate () {
-		if (target != null) {
+	public virtual float scroll 
+	{
+		get {
+			return Input.GetAxis ("Scroll");
+		} 
+	}
+	
+	void Update() 
+	{
+		distance = Mathf.Lerp(distance, distance + ( - scroll * scrollSpeed),0.5f);
+		distance = Mathf.Clamp(distance, minDistance, maxDistance);
+	}
+	
+	
+	void FixedUpdate () 
+	{
+		if (target != null) 
+		{
 			
-			targetPosition = new Vector3(target.transform.position.x, target.transform.position.y + 1, -13);
-			transform.LookAt(target.transform);
-				//transform.LookAt(player);
-		}else{
+			targetPosition = new Vector3(target.transform.position.x, target.transform.position.y + distance * 0.3f, -distance);
+			//transform.LookAt(target.transform);
+		}
+		else
+		{
 			Debug.Log("Player is null in LookAt");
 		}
-		if(targetPosition != transform.position){
+		if(targetPosition != transform.position)
+		{
 			transform.position = Vector3.Lerp(transform.position, targetPosition, 0.1f);
 		}
+
 		
 	}
 }
