@@ -9,7 +9,8 @@ public class PlayerMovement : MonoBehaviour
 	public Transform stickyPointPrefab;
 	Transform stickyPrefabInsctance;
 	
-	public float maxSpeed = 7;
+	public float maxSpeed = 20;
+	public float maxFreeSpeed = 60;
 	public float force = 8;
 	public float jumpSpeed = 5;
 	public float airControll = 0.3f;
@@ -57,7 +58,7 @@ public class PlayerMovement : MonoBehaviour
  
 	public virtual bool jump {
 		get {
-			return Input.GetButton ("Fire2");
+			return Input.GetButton ("Fire2") || Input.GetButton ("Jump") ;
 		}
 	}
 	 
@@ -156,13 +157,17 @@ public class PlayerMovement : MonoBehaviour
 		}
 		
 		// If the object is grounded and isn't moving at the max speed or higher apply force to move it
-		if (rigidbody.velocity.magnitude < maxSpeed && grounded ) {
+		if (rigidbody.velocity.magnitude < maxSpeed && grounded  && horizontal != 0) {
 			rigidbody.AddForce (transform.rotation * Vector3.right * horizontal);
 		}
 		
-		if (rigidbody.velocity.magnitude < maxSpeed && !grounded ) {
+		if (rigidbody.velocity.magnitude < maxSpeed && !grounded && horizontal != 0) {
 			rigidbody.AddForce (transform.rotation * Vector3.right * horizontal * controll);
 			
+		}
+		
+		if(rigidbody.velocity.magnitude > maxFreeSpeed){
+			rigidbody.velocity = Vector3.ClampMagnitude(rigidbody.velocity, maxFreeSpeed);
 		}
 		
 		if (jump && grounded) {
