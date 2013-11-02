@@ -16,7 +16,7 @@ public class Shoot : MonoBehaviour {
 			timer -= Time.deltaTime;
 		}
 		
-		if (Input.GetKeyDown(KeyCode.Mouse0)) {
+		if (Input.GetKeyDown(KeyCode.LeftControl)) {
 			if (timer <= 0) {
 				shoot(bullet);
 				timer = fireRate;

@@ -79,19 +79,19 @@ public class PlayerMovement : MonoBehaviour
 	
 	public virtual bool stickStart {
 		get {
-			return Input.GetKeyDown (KeyCode.LeftControl);
+			return Input.GetKeyDown (KeyCode.Mouse0);
 		} 
 	}
 	
 	public virtual bool stickStay {
 		get {
-			return Input.GetKey (KeyCode.LeftControl);
+			return Input.GetKey (KeyCode.Mouse0);
 		} 
 	}
 	
 	public virtual bool stickExit {
 		get {
-			return Input.GetKeyUp (KeyCode.LeftControl);
+			return Input.GetKeyUp (KeyCode.Mouse0);
 		} 
 	}
 	

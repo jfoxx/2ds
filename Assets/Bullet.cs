@@ -20,7 +20,7 @@ public class Bullet : MonoBehaviour {
 			//Destroy(gameObject);
 		}
 		
-		if (Input.GetKeyUp(KeyCode.Mouse0)) {
+		if (Input.GetKeyUp(KeyCode.LeftControl)) {
 			Destroy(gameObject);
 		}
 		

@@ -17,7 +17,7 @@ public class GameManager : MonoBehaviour
 	void Update ( ) 
 	{
 		if (player == null) {
-			
+			Application.LoadLevel(currentLevel);
 		}
 	}
 	

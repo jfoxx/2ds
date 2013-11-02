@@ -14,7 +14,7 @@ public class CameraFollow : MonoBehaviour
 	void Start () 
 	{
 		targetPosition = transform.position;
-		distance = 13;
+		distance = maxDistance;
 	}
 	
 	public virtual float scroll 
