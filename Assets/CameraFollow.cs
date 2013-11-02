@@ -36,8 +36,8 @@ public class CameraFollow : MonoBehaviour
 		if (target != null) 
 		{
 			
-			targetPosition = new Vector3(target.transform.position.x, target.transform.position.y + distance * 0.3f, -distance);
-			//transform.LookAt(target.transform);
+			targetPosition = new Vector3(target.transform.position.x, target.transform.position.y , -distance);
+			transform.LookAt(target.transform);
 		}
 		else
 		{

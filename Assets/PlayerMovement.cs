@@ -30,6 +30,9 @@ public class PlayerMovement : MonoBehaviour
 	public float stickyTime = 3;
 	public float stickyTimer;
 	
+	//for the slingshot.
+	RaycastHit hit;
+	
 	
 	public bool stickySet = false;
 	 
@@ -98,12 +101,12 @@ public class PlayerMovement : MonoBehaviour
 		
 		if (stickStart) 
 		{
-			RaycastHit hit;
+			
 			if(Physics.Raycast(transform.position, gunAxis.transform.TransformDirection(Vector3.forward),out hit, 1000))
 			{
 				if (hit.transform.CompareTag("Sticky")) 
 				{
-					stickPosition = hit.point;
+					stickPosition = hit.transform.position;
 					stickyPrefabInsctance = Instantiate(stickyPointPrefab, hit.point, Quaternion.identity) as Transform;
 					stickySet = true;
 					
@@ -123,6 +126,9 @@ public class PlayerMovement : MonoBehaviour
 		}
 		
 		if (stickStay && stickySet) {
+			
+			stickPosition = hit.transform.position;
+			stickyPrefabInsctance.transform.position = stickPosition;
 			stickyTimer -= Time.deltaTime;
 			Debug.DrawLine(transform.position, spring.connectedBody.transform.position, Color.red);
 			//spring.connectedBody.transform.position = transform.position;
