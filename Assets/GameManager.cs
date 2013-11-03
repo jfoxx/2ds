@@ -37,7 +37,7 @@ public class GameManager : MonoBehaviour
 	void CP_Finish ( )
 	{
 		//show win screen and next and stuff
-		Application.LoadLevel( currentLevel + 1);
+		Application.LoadLevel( currentLevel);
 	}
 	
 	void CP_Start ( )

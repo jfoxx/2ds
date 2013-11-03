@@ -4,6 +4,7 @@ using System.Collections;
 public class PlayerMovement : MonoBehaviour
 {
  	public AudioClip jumpSound;
+	public AudioClip shootForceLineSound;
 	
 	public Transform stickyRestingObject;
 	public Transform stickyPointPrefab;
@@ -61,7 +62,7 @@ public class PlayerMovement : MonoBehaviour
  
 	public virtual bool jump {
 		get {
-			return Input.GetButton ("Fire2") || Input.GetButton ("Jump") ;
+			return Input.GetButton ("Jump") ;
 		}
 	}
 	 
@@ -71,27 +72,22 @@ public class PlayerMovement : MonoBehaviour
 		} 
 	}
 
-	public virtual float vertical {
-		get {
-			return Input.GetAxis ("Vertical") * force;
-		} 
-	}
 	
 	public virtual bool stickStart {
 		get {
-			return Input.GetKeyDown (KeyCode.Mouse0);
+			return Input.GetButtonDown ("Fire1");
 		} 
 	}
 	
 	public virtual bool stickStay {
 		get {
-			return Input.GetKey (KeyCode.Mouse0);
+			return Input.GetButton ("Fire1");
 		} 
 	}
 	
 	public virtual bool stickExit {
 		get {
-			return Input.GetKeyUp (KeyCode.Mouse0);
+			return Input.GetButtonUp ("Fire1");
 		} 
 	}
 	
